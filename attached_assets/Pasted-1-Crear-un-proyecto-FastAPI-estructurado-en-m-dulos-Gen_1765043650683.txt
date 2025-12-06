@@ -1,0 +1,297 @@
+1. Crear un proyecto FastAPI estructurado en módulos
+
+Genera esta estructura de carpetas:
+
+app/
+  main.py
+  core/
+    config.py
+    database.py
+    s3.py
+    security.py
+  models/
+    user.py
+    template.py
+    apikey.py
+    renderlog.py
+  schemas/
+    user.py
+    template.py
+    render.py
+    apikey.py
+  services/
+    auth_service.py
+    template_service.py
+    render_service.py
+    apikey_service.py
+    log_service.py
+  routes/
+    auth.py
+    templates.py
+    render.py
+    apikeys.py
+    me.py
+  utils/
+    jinja_engine.py
+    pdf_engine.py
+
+
+Instala dependencias:
+
+fastapi
+uvicorn
+jinja2
+weasyprint
+python-multipart
+boto3
+sqlalchemy
+psycopg2-binary
+python-jose
+passlib[bcrypt]
+pydantic
+python-dotenv
+
+2. Implementar módulo core
+core/config.py
+
+Crear clase Settings:
+
+DB_URL
+
+S3 credentials
+
+SECRET_KEY
+
+JWT vars
+
+core/database.py
+
+Crear motor SQLAlchemy + SessionLocal.
+
+core/s3.py
+
+Función:
+
+upload_file(bucket, key, bytes)
+
+get_file(bucket, key)
+
+3. Implementar modelos SQLAlchemy
+models/user.py
+
+Campos:
+
+id
+
+email
+
+hashed_password
+
+created_at
+
+models/template.py
+
+Campos:
+
+id (uuid)
+
+name
+
+description
+
+s3_path
+
+owner_id
+
+created_at
+
+models/apikey.py
+
+Campos:
+
+id
+
+key
+
+owner_id
+
+created_at
+
+models/renderlog.py
+
+Campos:
+
+id
+
+template_id
+
+owner_id
+
+duration_ms
+
+status
+
+created_at
+
+4. Implementar motor de plantillas y motor PDF
+utils/jinja_engine.py
+
+Función:
+
+render_html(html_str, data_dict)
+
+utils/pdf_engine.py
+
+Función:
+
+html_to_pdf(bytes_html) -> pdf_bytes
+
+5. Implementar servicios
+services/auth_service.py
+
+register_user(email, password)
+
+authenticate(email, password)
+
+create_access_token(user)
+
+create_refresh_token(user)
+
+services/template_service.py
+
+create_template(data, html_file)
+
+update_template
+
+get_template
+
+delete_template
+
+services/render_service.py
+
+load_template_html(template_id)
+
+render_template(template_id, data)
+
+save_pdf_to_s3
+
+return pdf stream
+
+services/apikey_service.py
+
+create_api_key
+
+validate_api_key
+
+delete_api_key
+
+6. Implementar endpoints
+POST /auth/register
+
+email, password → crear usuario
+
+POST /auth/login
+
+retorna JWT access + refresh
+
+GET /me
+
+retorna usuario autenticado
+
+POST /apikeys/create
+
+genera API key
+
+GET /apikeys
+**DELETE /**apikeys/{id}
+POST /templates
+
+Input multipart:
+
+name
+
+description
+
+html_file
+
+Comportamiento:
+
+subir HTML a S3
+
+guardar metadata en BD
+
+retornar template_id
+
+GET /templates
+
+Listado
+
+GET /templates/{id}
+
+Detalle
+
+PUT /templates/{id}
+
+Actualizar metadatos o subir versión nueva de HTML
+
+DELETE /templates/{id}
+POST /render/{template_id}
+
+Input:
+
+{
+  "data": { ...variables... }
+}
+
+
+Proceso:
+
+Validar API Key o JWT
+
+Descargar plantilla HTML de S3
+
+Renderizar con Jinja2
+
+Convertir a PDF
+
+Devolver PDF stream
+
+7. Habilitar CORS y montar routers en main.py
+
+main.py debe:
+
+crear FastAPI()
+
+incluir routers auth, templates, render, apikeys, me
+
+iniciar con uvicorn
+
+8. Crear archivo dockerfile básico
+FROM python:3.11
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+
+9. Crear ejemplo de plantilla HTML en /example_templates/
+
+invoice.html:
+
+<html>
+  <body>
+    <h1>Factura de {{ nombre }}</h1>
+    <p>Monto: {{ monto }}</p>
+  </body>
+</html>
+
+10. Crear script inicializador init_db.py
+
+– Crear tablas
+– Crear usuario admin opcional
+
+ESTO ES TODO.
