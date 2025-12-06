@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Renderizar PDF - PDF Template API{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-file-pdf me-2"></i>Renderizar PDF
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form onsubmit="renderTemplate(event)">
+                        <div class="mb-3">
+                            <label for="template_id" class="form-label">Seleccionar Plantilla</label>
+                            <select class="form-select" id="template_id" name="template_id" required>
+                                <option value="">-- Selecciona una plantilla --</option>
+                                {% for template in templates %}
+                                <option value="{{ template.id }}" {% if selected_template_id == template.id|string %}selected{% endif %}>
+                                    {{ template.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="data" class="form-label">Datos JSON</label>
+                            <textarea class="form-control code-editor" id="data" name="data" rows="10" 
+                                      placeholder='{"nombre": "Juan", "items": [{"producto": "Item 1", "precio": 100}]}'>{}</textarea>
+                            <small class="text-muted">Ingresa los datos en formato JSON que se usaran para renderizar la plantilla</small>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                            <span class="btn-text">
+                                <i class="bi bi-download me-2"></i>Generar y Descargar PDF
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-code-slash me-2"></i>Ejemplo de Datos JSON</h5>
+                </div>
+                <div class="card-body">
+                    <p>Los datos que ingreses estaran disponibles en tu plantilla Jinja2:</p>
+                    <pre class="bg-light p-3 rounded"><code>{
+    "invoice_number": "INV-001",
+    "customer_name": "Juan Perez",
+    "date": "2024-12-06",
+    "items": [
+        {"name": "Producto A", "qty": 2, "price": 50.00},
+        {"name": "Servicio B", "qty": 1, "price": 100.00}
+    ],
+    "total": 200.00
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

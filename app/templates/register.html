@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Registrarse - PDF Template API{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="logo">
+            <i class="bi bi-file-earmark-pdf"></i>
+        </div>
+        <h2>Crear Cuenta</h2>
+        <form onsubmit="register(event)">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contrasena</label>
+                <input type="password" class="form-control" id="password" name="password" required minlength="6">
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirmar Contrasena</label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6">
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2">
+                <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                <span class="btn-text">Crear Cuenta</span>
+            </button>
+        </form>
+        <div class="text-center mt-4">
+            <p class="text-muted">Ya tienes cuenta? <a href="/login">Iniciar Sesion</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

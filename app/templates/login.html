@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesion - PDF Template API{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="logo">
+            <i class="bi bi-file-earmark-pdf"></i>
+        </div>
+        <h2>Iniciar Sesion</h2>
+        <form onsubmit="login(event)">
+            <div class="mb-3">
+                <label for="username" class="form-label">Email</label>
+                <input type="email" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contrasena</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2">
+                <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                <span class="btn-text">Iniciar Sesion</span>
+            </button>
+        </form>
+        <div class="text-center mt-4">
+            <p class="text-muted">No tienes cuenta? <a href="/register">Registrate</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

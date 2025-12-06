@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}API Keys - PDF Template API{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>API Keys</h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createKeyModal">
+            <i class="bi bi-plus-lg me-2"></i>Nueva API Key
+        </button>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-info-circle me-2"></i>Como usar las API Keys
+        </div>
+        <div class="card-body">
+            <p>Usa tu API Key en el header de autorizacion para acceder a la API programaticamente:</p>
+            <pre class="bg-light p-3 rounded"><code>Authorization: Bearer TU_API_KEY</code></pre>
+            <p class="mb-0">Ejemplo con curl:</p>
+            <pre class="bg-light p-3 rounded mb-0"><code>curl -X POST "{{ request.url.scheme }}://{{ request.url.netloc }}/render/TEMPLATE_ID" \
+     -H "Authorization: Bearer TU_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"nombre": "Juan"}' \
+     --output documento.pdf</code></pre>
+        </div>
+    </div>
+
+    {% if apikeys %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Key (parcial)</th>
+                        <th>Creada</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key in apikeys %}
+                    <tr>
+                        <td><strong>{{ key.name }}</strong></td>
+                        <td><code>{{ key.key[:8] }}...{{ key.key[-4:] }}</code></td>
+                        <td>{{ key.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>
+                            <button onclick="deleteApiKey('{{ key.id }}')" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Revocar
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body empty-state">
+            <i class="bi bi-key"></i>
+            <h5>No tienes API Keys</h5>
+            <p class="text-muted">Crea una API Key para acceder a la API programaticamente</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createKeyModal">
+                <i class="bi bi-plus-lg me-2"></i>Crear API Key
+            </button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="modal fade" id="createKeyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva API Key</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form onsubmit="createApiKey(event)">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               placeholder="Ej: Produccion, Desarrollo, Mi App" required>
+                        <small class="text-muted">Un nombre descriptivo para identificar esta key</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                        <span class="btn-text">Crear API Key</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newKeyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="bi bi-check-circle me-2"></i>API Key Creada</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Importante:</strong> Copia esta key ahora. No podras verla completa de nuevo.
+                </div>
+                <div class="api-key-display mb-3">
+                    <span id="newKeyDisplay"></span>
+                </div>
+                <button onclick="copyToClipboard(document.getElementById('newKeyDisplay').textContent)" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-clipboard me-2"></i>Copiar al Portapapeles
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="location.reload()">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
