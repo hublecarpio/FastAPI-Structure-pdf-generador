@@ -103,9 +103,10 @@ async function loadApiKeysList() {
             return;
         }
         
-        const apikeys = await response.json();
+        const result = await response.json();
+        const apikeys = result.api_keys || result;
         
-        if (apikeys.length > 0) {
+        if (apikeys && apikeys.length > 0) {
             container.innerHTML = `
                 <div class="card">
                     <div class="table-responsive">
