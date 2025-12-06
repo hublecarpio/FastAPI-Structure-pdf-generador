@@ -1,4 +1,4 @@
-const API_BASE = '';
+const API_BASE = '/api';
 
 function getToken() {
     return localStorage.getItem('access_token');
@@ -87,7 +87,7 @@ async function login(event) {
         const email = form.email.value;
         const password = form.password.value;
         
-        const response = await fetch('/auth/login', {
+        const response = await fetch('/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -126,7 +126,7 @@ async function register(event) {
             return;
         }
         
-        const response = await fetch('/auth/register', {
+        const response = await fetch('/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -175,14 +175,15 @@ async function createTemplate(event) {
     setLoading(btn, true);
     
     try {
-        const formData = new FormData(form);
-        const response = await fetch('/templates', {
+        const name = form.name.value;
+        const content = form.content.value;
+        
+        const response = await apiRequest('/templates', {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${getToken()}` },
-            body: formData
+            body: JSON.stringify({ name, content })
         });
         
-        if (response.ok) {
+        if (response && response.ok) {
             showToast('Plantilla creada exitosamente');
             setTimeout(() => window.location.href = '/templates', 500);
         } else {
@@ -268,7 +269,7 @@ async function renderTemplate(event) {
             return;
         }
         
-        const response = await fetch(`/render/${templateId}`, {
+        const response = await fetch(`/api/render/${templateId}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${getToken()}`,

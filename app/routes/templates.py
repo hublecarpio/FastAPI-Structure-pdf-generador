@@ -1,10 +1,11 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import Optional
 from app.core.database import get_db
 from app.core.security import get_current_user
-from app.schemas.template import TemplateResponse, TemplateListResponse
+from app.core.s3 import get_file
+from app.core.config import settings
+from app.schemas.template import TemplateCreate, TemplateUpdate, TemplateResponse, TemplateListResponse
 from app.services.template_service import (
     create_template,
     get_template,
@@ -18,48 +19,54 @@ router = APIRouter(prefix="/templates", tags=["templates"])
 
 
 @router.post("", response_model=TemplateResponse)
-async def create(
-    name: str = Form(...),
-    description: Optional[str] = Form(None),
-    html_file: UploadFile = File(...),
+def create(
+    data: TemplateCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    return await create_template(db, name, description, html_file, current_user)
+    return create_template(db, data.name, data.content, data.description, current_user)
 
 
-@router.get("", response_model=TemplateListResponse)
-async def list_templates(
+@router.get("")
+def list_templates(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     templates = get_templates(db, current_user)
-    return TemplateListResponse(templates=templates, total=len(templates))
+    return templates
 
 
-@router.get("/{template_id}", response_model=TemplateResponse)
-async def get_one(
+@router.get("/{template_id}")
+def get_one(
     template_id: UUID,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    return get_template(db, template_id, current_user)
+    template = get_template(db, template_id, current_user)
+    content = get_file(settings.S3_BUCKET, template.s3_path)
+    return {
+        "id": template.id,
+        "name": template.name,
+        "description": template.description,
+        "s3_path": template.s3_path,
+        "owner_id": template.owner_id,
+        "created_at": template.created_at,
+        "content": content.decode('utf-8') if content else None
+    }
 
 
 @router.put("/{template_id}", response_model=TemplateResponse)
-async def update(
+def update(
     template_id: UUID,
-    name: Optional[str] = Form(None),
-    description: Optional[str] = Form(None),
-    html_file: Optional[UploadFile] = File(None),
+    data: TemplateUpdate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    return await update_template(db, template_id, current_user, name, description, html_file)
+    return update_template(db, template_id, current_user, data.name, data.description, data.content)
 
 
 @router.delete("/{template_id}")
-async def delete(
+def delete(
     template_id: UUID,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)

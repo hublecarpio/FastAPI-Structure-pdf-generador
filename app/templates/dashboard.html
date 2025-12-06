@@ -97,8 +97,9 @@ async function loadDashboard() {
             apiRequest('/apikeys')
         ]);
         
+        let templates = [];
         if (templatesRes && templatesRes.ok) {
-            const templates = await templatesRes.json();
+            templates = await templatesRes.json();
             document.getElementById('templatesCount').textContent = templates.length;
             
             const container = document.getElementById('recentTemplatesContainer');

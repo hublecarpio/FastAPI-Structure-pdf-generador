@@ -19,12 +19,12 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
+app.include_router(auth.router, prefix="/api")
+app.include_router(me.router, prefix="/api")
+app.include_router(apikeys.router, prefix="/api")
+app.include_router(templates.router, prefix="/api")
+app.include_router(render.router, prefix="/api")
 app.include_router(web.router)
-app.include_router(auth.router)
-app.include_router(me.router)
-app.include_router(apikeys.router)
-app.include_router(templates.router)
-app.include_router(render.router)
 
 
 @app.get("/health")
