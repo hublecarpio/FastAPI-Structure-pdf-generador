@@ -17,12 +17,7 @@
                         <div class="mb-3">
                             <label for="template_id" class="form-label">Seleccionar Plantilla</label>
                             <select class="form-select" id="template_id" name="template_id" required>
-                                <option value="">-- Selecciona una plantilla --</option>
-                                {% for template in templates %}
-                                <option value="{{ template.id }}" {% if selected_template_id == template.id|string %}selected{% endif %}>
-                                    {{ template.name }}
-                                </option>
-                                {% endfor %}
+                                <option value="">Cargando plantillas...</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -62,4 +57,41 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadTemplatesForRender() {
+    const select = document.getElementById('template_id');
+    
+    try {
+        const response = await apiRequest('/templates');
+        if (!response || !response.ok) {
+            select.innerHTML = '<option value="">Error al cargar plantillas</option>';
+            return;
+        }
+        
+        const templates = await response.json();
+        
+        if (templates.length > 0) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedId = urlParams.get('template_id');
+            
+            select.innerHTML = '<option value="">-- Selecciona una plantilla --</option>' +
+                templates.map(t => `
+                    <option value="${t.id}" ${selectedId == t.id ? 'selected' : ''}>
+                        ${t.name}
+                    </option>
+                `).join('');
+        } else {
+            select.innerHTML = '<option value="">No hay plantillas disponibles</option>';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        select.innerHTML = '<option value="">Error de conexion</option>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadTemplatesForRender);
+</script>
 {% endblock %}

@@ -79,6 +79,25 @@ document.getElementById('file').addEventListener('change', function(e) {
     }
 });
 
+async function loadTemplateData() {
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts.length >= 4 && pathParts[3] === 'edit') {
+        const templateId = pathParts[2];
+        try {
+            const response = await apiRequest(`/templates/${templateId}`);
+            if (response && response.ok) {
+                const template = await response.json();
+                document.getElementById('name').value = template.name || '';
+                if (template.content) {
+                    document.getElementById('htmlPreview').value = template.content;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading template:', error);
+        }
+    }
+}
+
 async function updateTemplate(event, id) {
     event.preventDefault();
     const form = event.target;
@@ -106,5 +125,7 @@ async function updateTemplate(event, id) {
         setLoading(btn, false);
     }
 }
+
+document.addEventListener('DOMContentLoaded', loadTemplateData);
 </script>
 {% endblock %}

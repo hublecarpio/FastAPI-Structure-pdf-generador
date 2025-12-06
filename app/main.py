@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import auth, templates, render, apikeys, me
+from fastapi.staticfiles import StaticFiles
+from app.routes import auth, templates, render, apikeys, me, web
 
 app = FastAPI(
     title="PDF Template Rendering API",
@@ -16,20 +17,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+app.include_router(web.router)
 app.include_router(auth.router)
 app.include_router(me.router)
 app.include_router(apikeys.router)
 app.include_router(templates.router)
 app.include_router(render.router)
-
-
-@app.get("/")
-async def root():
-    return {
-        "message": "PDF Template Rendering API",
-        "docs": "/docs",
-        "health": "ok"
-    }
 
 
 @app.get("/health")

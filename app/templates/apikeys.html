@@ -19,7 +19,7 @@
             <p>Usa tu API Key en el header de autorizacion para acceder a la API programaticamente:</p>
             <pre class="bg-light p-3 rounded"><code>Authorization: Bearer TU_API_KEY</code></pre>
             <p class="mb-0">Ejemplo con curl:</p>
-            <pre class="bg-light p-3 rounded mb-0"><code>curl -X POST "{{ request.url.scheme }}://{{ request.url.netloc }}/render/TEMPLATE_ID" \
+            <pre class="bg-light p-3 rounded mb-0"><code>curl -X POST "/render/TEMPLATE_ID" \
      -H "Authorization: Bearer TU_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"nombre": "Juan"}' \
@@ -27,47 +27,13 @@
         </div>
     </div>
 
-    {% if apikeys %}
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Key (parcial)</th>
-                        <th>Creada</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for key in apikeys %}
-                    <tr>
-                        <td><strong>{{ key.name }}</strong></td>
-                        <td><code>{{ key.key[:8] }}...{{ key.key[-4:] }}</code></td>
-                        <td>{{ key.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                        <td>
-                            <button onclick="deleteApiKey('{{ key.id }}')" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i> Revocar
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div id="apikeysContainer">
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
         </div>
     </div>
-    {% else %}
-    <div class="card">
-        <div class="card-body empty-state">
-            <i class="bi bi-key"></i>
-            <h5>No tienes API Keys</h5>
-            <p class="text-muted">Crea una API Key para acceder a la API programaticamente</p>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createKeyModal">
-                <i class="bi bi-plus-lg me-2"></i>Crear API Key
-            </button>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <div class="modal fade" id="createKeyModal" tabindex="-1">
@@ -123,4 +89,71 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadApiKeysList() {
+    const container = document.getElementById('apikeysContainer');
+    
+    try {
+        const response = await apiRequest('/apikeys');
+        if (!response || !response.ok) {
+            container.innerHTML = '<div class="alert alert-danger">Error al cargar API Keys</div>';
+            return;
+        }
+        
+        const apikeys = await response.json();
+        
+        if (apikeys.length > 0) {
+            container.innerHTML = `
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Key (parcial)</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${apikeys.map(key => `
+                                    <tr>
+                                        <td><strong>${key.name}</strong></td>
+                                        <td><code>${key.key_prefix || key.key?.substring(0, 8) || '***'}...</code></td>
+                                        <td>
+                                            <button onclick="deleteApiKey('${key.id}')" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i> Revocar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="card">
+                    <div class="card-body empty-state">
+                        <i class="bi bi-key"></i>
+                        <h5>No tienes API Keys</h5>
+                        <p class="text-muted">Crea una API Key para acceder a la API programaticamente</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createKeyModal">
+                            <i class="bi bi-plus-lg me-2"></i>Crear API Key
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = '<div class="alert alert-danger">Error de conexion</div>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadApiKeysList);
+</script>
 {% endblock %}

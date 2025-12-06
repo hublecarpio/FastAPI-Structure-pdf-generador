@@ -11,45 +11,80 @@
         </a>
     </div>
 
-    {% if templates %}
-    <div class="row g-4">
-        {% for template in templates %}
-        <div class="col-md-4">
-            <div class="card template-card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ template.name }}</h5>
-                    <p class="card-text text-muted small">
-                        Creada: {{ template.created_at.strftime('%d/%m/%Y %H:%M') }}
-                    </p>
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <div class="btn-group w-100">
-                        <a href="/render?template_id={{ template.id }}" class="btn btn-success">
-                            <i class="bi bi-play-fill"></i> Renderizar
-                        </a>
-                        <a href="/templates/{{ template.id }}/edit" class="btn btn-outline-secondary">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <button onclick="deleteTemplate('{{ template.id }}')" class="btn btn-outline-danger">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                </div>
+    <div id="templatesContainer">
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
             </div>
         </div>
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="card">
-        <div class="card-body empty-state">
-            <i class="bi bi-file-earmark-plus"></i>
-            <h5>No tienes plantillas</h5>
-            <p class="text-muted">Crea tu primera plantilla HTML para generar PDFs</p>
-            <a href="/templates/new" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-2"></i>Crear Plantilla
-            </a>
-        </div>
-    </div>
-    {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadTemplatesList() {
+    const container = document.getElementById('templatesContainer');
+    
+    try {
+        const response = await apiRequest('/templates');
+        if (!response || !response.ok) {
+            container.innerHTML = '<div class="alert alert-danger">Error al cargar plantillas</div>';
+            return;
+        }
+        
+        const templates = await response.json();
+        
+        if (templates.length > 0) {
+            container.innerHTML = `
+                <div class="row g-4">
+                    ${templates.map(t => `
+                        <div class="col-md-4">
+                            <div class="card template-card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">${t.name}</h5>
+                                    <p class="card-text text-muted small">
+                                        ID: ${t.id}
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-transparent border-0">
+                                    <div class="btn-group w-100">
+                                        <a href="/render?template_id=${t.id}" class="btn btn-success">
+                                            <i class="bi bi-play-fill"></i> Renderizar
+                                        </a>
+                                        <a href="/templates/${t.id}/edit" class="btn btn-outline-secondary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button onclick="deleteTemplate('${t.id}')" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="card">
+                    <div class="card-body empty-state">
+                        <i class="bi bi-file-earmark-plus"></i>
+                        <h5>No tienes plantillas</h5>
+                        <p class="text-muted">Crea tu primera plantilla HTML para generar PDFs</p>
+                        <a href="/templates/new" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-2"></i>Crear Plantilla
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = '<div class="alert alert-danger">Error de conexion</div>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadTemplatesList);
+</script>
 {% endblock %}

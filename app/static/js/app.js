@@ -84,10 +84,13 @@ async function login(event) {
     setLoading(btn, true);
     
     try {
-        const formData = new FormData(form);
+        const email = form.email.value;
+        const password = form.password.value;
+        
         const response = await fetch('/auth/login', {
             method: 'POST',
-            body: formData
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
         });
         
         const data = await response.json();
