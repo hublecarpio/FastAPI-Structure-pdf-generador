@@ -93,7 +93,17 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload
 
 Access the API documentation at `/docs` (Swagger UI) or `/redoc`.
 
+## Self-Hosting / Deployment
+The project includes Docker support for easy self-hosting:
+- `Dockerfile` - Container image definition
+- `docker-compose.yml` - Full stack with PostgreSQL
+- `requirements.txt` - Python dependencies
+- `DEPLOYMENT.md` - Complete deployment guide
+
+See `DEPLOYMENT.md` for detailed instructions.
+
 ## Recent Changes
+- 2024-12-06: Added deployment documentation and Docker support
 - 2024-12-06: Initial project setup with complete API implementation
   - User registration and JWT authentication
   - Template CRUD with S3/local storage
