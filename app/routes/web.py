@@ -38,7 +38,7 @@ async def new_template_page(request: Request):
 
 
 @router.get("/templates/{template_id}/edit", response_class=HTMLResponse)
-async def edit_template_page(request: Request, template_id: int):
+async def edit_template_page(request: Request, template_id: str):
     return templates.TemplateResponse("template_form.html", {"request": request, "current_user": {"email": ""}, "template": {"id": template_id}})
 
 
