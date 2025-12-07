@@ -1,9 +1,20 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
 from app.routes import auth, templates, render, apikeys, me, web
+from app.core.database import engine, Base
+from app.models import user, template, apikey, renderlog
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
 
 app = FastAPI(
+    lifespan=lifespan,
     title="PDF Template Rendering API",
     description="API for managing HTML templates and rendering them as PDFs",
     version="1.0.0"
