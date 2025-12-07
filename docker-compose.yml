@@ -4,10 +4,11 @@ services:
   app:
     build: .
     ports:
-      - "8080:8080"
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/pdfapi
-      - SESSION_SECRET=tu-clave-secreta-muy-larga-y-segura
+      - SESSION_SECRET=${SESSION_SECRET:-cambia-esta-clave-secreta}
+      - APP_PORT=${APP_PORT:-8080}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
       - AWS_REGION=${AWS_REGION:-us-east-1}

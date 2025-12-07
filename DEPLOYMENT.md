@@ -1,5 +1,19 @@
 # Guia de Despliegue - PDF Template API
 
+## Cambiar Puerto
+
+El puerto es configurable via variable de entorno `APP_PORT`:
+
+```bash
+# En .env
+APP_PORT=3000
+
+# O directamente al ejecutar
+APP_PORT=3000 docker-compose up -d
+```
+
+---
+
 ## Dependencias del Sistema
 
 Este proyecto requiere:
@@ -184,6 +198,88 @@ sudo systemctl status pdfapi
 
 ---
 
+## Opcion 4: Docker Swarm (Produccion con Alta Disponibilidad)
+
+### Requisitos
+- Docker Swarm inicializado (`docker swarm init`)
+- Registro de imagenes (Docker Hub, GitLab Registry, etc.)
+
+### 1. Construir y subir la imagen
+```bash
+# Construir imagen
+docker build -t tu-registry.com/pdfapi:latest .
+
+# Subir al registry
+docker push tu-registry.com/pdfapi:latest
+```
+
+### 2. Crear archivo .env en el servidor
+```env
+# Configuracion basica
+APP_PORT=8080
+SESSION_SECRET=tu-clave-secreta-muy-segura
+REPLICAS=3
+
+# Base de datos
+DATABASE_URL=postgresql://usuario:password@tu-db-host:5432/pdfapi
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password-seguro
+POSTGRES_DB=pdfapi
+
+# Registry
+REGISTRY=tu-registry.com/
+TAG=latest
+
+# S3 (opcional)
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+```
+
+### 3. Desplegar el stack
+```bash
+# Cargar variables
+export $(cat .env | xargs)
+
+# Desplegar stack
+docker stack deploy -c docker-swarm.yml pdfapi
+```
+
+### 4. Verificar despliegue
+```bash
+# Ver servicios
+docker service ls
+
+# Ver replicas
+docker service ps pdfapi_app
+
+# Ver logs
+docker service logs -f pdfapi_app
+```
+
+### 5. Escalar replicas
+```bash
+docker service scale pdfapi_app=5
+```
+
+### Actualizar a nueva version
+```bash
+# Construir y subir nueva imagen
+docker build -t tu-registry.com/pdfapi:v2 .
+docker push tu-registry.com/pdfapi:v2
+
+# Actualizar servicio (rolling update)
+docker service update --image tu-registry.com/pdfapi:v2 pdfapi_app
+```
+
+### Caracteristicas del Stack Swarm
+- **Rolling updates** con rollback automatico
+- **Health checks** cada 30 segundos
+- **Limite de recursos** (CPU y memoria)
+- **Red overlay** para comunicacion entre nodos
+- **Restart automatico** en caso de fallo
+
+---
+
 ## Configuracion de Nginx (Proxy Inverso)
 
 ```nginx
@@ -217,12 +313,14 @@ sudo certbot --nginx -d tu-dominio.com
 
 | Variable | Requerido | Descripcion |
 |----------|-----------|-------------|
+| `APP_PORT` | No | Puerto de la aplicacion (default: 8080) |
 | `DATABASE_URL` | Si | URL de conexion PostgreSQL |
 | `SESSION_SECRET` | Si | Clave secreta para JWT (min 32 caracteres) |
 | `AWS_ACCESS_KEY_ID` | No | Access key de AWS para S3 |
 | `AWS_SECRET_ACCESS_KEY` | No | Secret key de AWS para S3 |
 | `AWS_REGION` | No | Region de AWS (default: us-east-1) |
 | `S3_BUCKET` | No | Nombre del bucket S3 (default: pdf-templates) |
+| `REPLICAS` | No | Numero de replicas en Swarm (default: 2) |
 
 **Nota:** Si no configuras S3, los templates se guardan localmente en `local_storage/`.
 

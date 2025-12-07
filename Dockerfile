@@ -23,6 +23,8 @@ COPY main.py .
 
 RUN mkdir -p local_storage
 
-EXPOSE 8080
+ENV APP_PORT=8080
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+EXPOSE ${APP_PORT}
+
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${APP_PORT}
