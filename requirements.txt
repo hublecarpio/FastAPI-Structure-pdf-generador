@@ -13,3 +13,5 @@ python-multipart>=0.0.20
 sqlalchemy>=2.0.44
 uvicorn>=0.38.0
 weasyprint>=67.0
+pdf2image
+Pillow

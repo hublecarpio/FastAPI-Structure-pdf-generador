@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-from app.routes import auth, templates, render, apikeys, me, web
+from app.routes import auth, templates, render, apikeys, me, web, images
 from app.core.database import engine, Base
 from app.models import user, template, apikey, renderlog
 
@@ -35,6 +35,7 @@ app.include_router(me.router, prefix="/api")
 app.include_router(apikeys.router, prefix="/api")
 app.include_router(templates.router, prefix="/api")
 app.include_router(render.router, prefix="/api")
+app.include_router(images.router, prefix="/api")
 app.include_router(web.router)
 
 
