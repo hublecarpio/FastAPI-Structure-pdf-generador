@@ -9,10 +9,8 @@ router = APIRouter(prefix="/images", tags=["images"])
 async def get_image(filename: str):
     """
     Download a generated image by filename.
+    Only allows downloading images with valid naming pattern.
     """
-    if not filename.endswith(".png"):
-        raise HTTPException(status_code=400, detail="Invalid image format")
-    
     filepath = get_image_path(filename)
     
     if not filepath:

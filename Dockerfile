@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev \
     libcairo2 \
     fonts-liberation \
+    poppler-utils \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -19,7 +20,7 @@ COPY app/ ./app/
 COPY init_db.py .
 COPY main.py .
 
-RUN mkdir -p local_storage
+RUN mkdir -p local_storage generated_images
 
 ENV APP_PORT=8080
 

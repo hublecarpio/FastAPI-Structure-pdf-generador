@@ -44,9 +44,18 @@ async def render_to_images(
     Render template to PDF and convert to images.
     Returns URLs to download each page as PNG.
     """
-    pdf_bytes = render_template(db, template_id, render_request.data, current_user)
+    from fastapi import HTTPException
+    from app.utils.pdf_to_images import PDFConversionError
     
-    filenames = pdf_to_images(pdf_bytes, dpi=dpi)
+    try:
+        pdf_bytes = render_template(db, template_id, render_request.data, current_user)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Template rendering failed: {str(e)}")
+    
+    try:
+        filenames = pdf_to_images(pdf_bytes, dpi=dpi)
+    except PDFConversionError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     base_url = str(request.base_url).rstrip("/")
     image_urls = [f"{base_url}/api/images/{filename}" for filename in filenames]

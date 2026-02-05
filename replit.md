@@ -39,7 +39,8 @@ app/
 │   └── apikeys.py  # /apikeys/* endpoints
 ├── utils/          # Helper utilities
 │   ├── jinja_engine.py # Jinja2 template processing
-│   └── pdf_engine.py   # WeasyPrint PDF generation
+│   ├── pdf_engine.py   # WeasyPrint PDF generation
+│   └── pdf_to_images.py # PDF to PNG conversion
 └── main.py         # FastAPI application entry point
 ```
 
@@ -67,12 +68,17 @@ app/
 
 ### Rendering
 - `POST /render/{template_id}` - Render template to PDF with provided data
+- `POST /render/{template_id}/images` - Render template to images (PNG), returns URLs
+
+### Images
+- `GET /images/{filename}` - Download a generated image
 
 ## Technologies
 - **FastAPI** - Web framework
 - **SQLAlchemy** - ORM for database operations
 - **PostgreSQL** - Database (via Replit)
 - **WeasyPrint** - HTML to PDF conversion
+- **pdf2image** - PDF to image conversion (requires poppler)
 - **Jinja2** - Template engine
 - **JWT** - Token-based authentication
 - **Boto3** - S3 storage (optional, falls back to local)
@@ -103,6 +109,10 @@ The project includes Docker support for easy self-hosting:
 See `DEPLOYMENT.md` for detailed instructions.
 
 ## Recent Changes
+- 2025-02-05: Added PDF to images conversion endpoint
+  - New endpoint: POST /render/{template_id}/images
+  - Converts PDF pages to PNG images
+  - Returns URLs for downloading each page
 - 2024-12-06: Added deployment documentation and Docker support
 - 2024-12-06: Initial project setup with complete API implementation
   - User registration and JWT authentication
