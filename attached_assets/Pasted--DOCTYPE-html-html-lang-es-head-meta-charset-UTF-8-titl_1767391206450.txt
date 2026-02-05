@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Guías de Envío - Lista</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff;
+            color: #000;
+            font-size: 11px; /* Fuente base más pequeña */
+        }
+
+        /* Estilo del contenedor de CADA guía */
+        .shipping-label {
+            width: 100%;
+            max-width: 800px;
+            border-bottom: 2px dashed #ccc; /* Línea de corte */
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            
+            /* Evita que una guía se parta entre dos hojas al imprimir */
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* ----- COLUMNA IZQUIERDA ----- */
+        .left-col {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 28px; /* Logo más pequeño */
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            display: inline-block;
+            margin-right: 8px;
+            border: 2px solid black;
+            padding: 2px 4px;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .field {
+            margin-bottom: 3px; /* Menos espacio entre líneas */
+            line-height: 1.2;
+        }
+
+        .label {
+            font-weight: 800;
+        }
+
+        .divider {
+            border-bottom: 1px dashed #999;
+            margin: 8px 0;
+            width: 100%;
+        }
+
+        /* ----- COLUMNA DERECHA ----- */
+        .right-col {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid black;
+            margin-bottom: 5px;
+            /* Altura fija REDUCIDA para que entren varias en una hoja */
+            min-height: 140px; 
+            display: table;
+        }
+
+        .product-table th {
+            background-color: #000;
+            color: #fff;
+            padding: 3px;
+            text-align: left;
+            font-size: 9px;
+            text-transform: uppercase;
+            border-right: 1px solid white;
+        }
+
+        .product-table td {
+            padding: 4px;
+            font-size: 10px;
+            vertical-align: top;
+            border-right: 2px solid black;
+        }
+
+        /* Anchos de columna */
+        .col-cant { width: 8%; text-align: center; }
+        .col-prod { width: 62%; }
+        .col-ml { width: 15%; text-align: center; }
+        .col-dets { width: 15%; text-align: center; }
+
+        /* Totales Compactos */
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .totals-box {
+            border: 2px solid black;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid black;
+        }
+
+        .totals-row:last-child { border-bottom: none; }
+
+        .t-label { padding: 2px 5px; background-color: #fff; }
+        .t-value { padding: 2px 8px; text-align: right; min-width: 50px; }
+
+        .black-bg { background-color: #000; color: #fff; }
+        
+        /* Ajuste para impresión */
+        @media print {
+            body { padding: 0; }
+            .shipping-label { margin-bottom: 10px; padding-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    {% for guia in guias %}
+    
+    <div class="shipping-label">
+        <div class="left-col">
+            <div class="logo"><span>DN</span> DUVON</div>
+
+            <div class="field"><span class="label">NOMBRE:</span> {{ guia.nombre }}</div>
+            <div class="field"><span class="label">APELLIDOS:</span> {{ guia.apellidos }}</div>
+            <div class="field"><span class="label">DNI:</span> {{ guia.dni }}</div>
+            <div class="field"><span class="label">CELULAR:</span> {{ guia.celular }}</div>
+
+            <div class="divider"></div>
+
+            <div class="field"><span class="label">LOCALIDAD:</span> {{ guia.localidad }}</div>
+            <div class="field"><span class="label">TIPO DE ENVÍO:</span> {{ guia.tipo_envio }}</div>
+            <div class="field"><span class="label">DIRECCIÓN:</span> {{ guia.direccion }}</div>
+            <br>
+            <div class="field"><span class="label">REFERENCIA:</span> {{ guia.referencia }}</div>
+        </div>
+
+        <div class="right-col">
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th class="col-cant">CANT.</th>
+                        <th class="col-prod">PRODUCTO</th>
+                        <th class="col-ml">ML</th>
+                        <th class="col-dets">DETS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in guia.items %}
+                    <tr>
+                        <td class="col-cant">{{ item.cantidad }}</td>
+                        <td class="col-prod">{{ item.descripcion }}</td>
+                        <td class="col-ml">{{ item.ml }}</td>
+                        <td class="col-dets">{{ item.dets }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                         <td class="col-cant"></td><td class="col-prod"></td><td class="col-ml"></td><td class="col-dets"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="totals-section">
+                <div class="totals-box">
+                    <div class="totals-row">
+                        <div class="t-label">C. Prod.</div>
+                        <div class="t-value">${{ guia.costo_prod }}</div>
+                    </div>
+                    <div class="totals-row">
+                        <div class="t-label">C. Del.</div>
+                        <div class="t-value">${{ guia.costo_del }}</div>
+                    </div>
+                </div>
+
+                <div class="totals-box">
+                    <div class="totals-row">
+                        <div class="t-label">Adelanto</div>
+                        <div class="t-value">$ {{ guia.adelanto }}</div>
+                    </div>
+                    <div class="totals-row">
+                        <div class="t-label">Saldo</div>
+                        <div class="t-value">$ {{ guia.saldo }}</div>
+                    </div>
+                    <div class="totals-row black-bg">
+                        <div class="t-label black-bg">Total</div>
+                        <div class="t-value black-bg">$ {{ guia.total }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% endfor %}
+    </body>
+</html>
