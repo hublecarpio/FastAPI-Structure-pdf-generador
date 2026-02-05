@@ -5,7 +5,7 @@ integrations = ["python_database:1.0.0"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["cargo", "fontconfig", "freetype", "ghostscript", "glib", "harfbuzz", "lcms2", "libiconv", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "pango", "poppler_utils", "rustc", "tcl", "tk", "zlib", "poppler"]
+packages = ["cargo", "fontconfig", "freetype", "ghostscript", "glib", "harfbuzz", "lcms2", "libiconv", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "pango", "poppler", "poppler_utils", "rustc", "tcl", "tk", "zlib"]
 
 [workflows]
 runButton = "Project"

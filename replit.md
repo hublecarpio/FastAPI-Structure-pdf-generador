@@ -73,6 +73,9 @@ app/
 ### Images
 - `GET /images/{filename}` - Download a generated image
 
+### PDF Conversion
+- `POST /pdf-to-images` - Convert a PDF from URL to PNG images
+
 ## Technologies
 - **FastAPI** - Web framework
 - **SQLAlchemy** - ORM for database operations
