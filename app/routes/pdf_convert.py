@@ -25,7 +25,7 @@ async def convert_pdf_to_images(
     - dpi: Resolution for images (default: 150)
     """
     try:
-        async with httpx.AsyncClient(timeout=60.0) as client:
+        async with httpx.AsyncClient(timeout=60.0, follow_redirects=True) as client:
             response = await client.get(str(pdf_request.url))
             response.raise_for_status()
     except httpx.TimeoutException:
