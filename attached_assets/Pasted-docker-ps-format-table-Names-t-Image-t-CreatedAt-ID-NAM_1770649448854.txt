@@ -1,0 +1,58 @@
+docker ps --format "table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}"
+ID             NAME                                                       MODE         REPLICAS   IMAGE                                    PORTS
+w5wl7v1lwfk6   api_video_video-api                                        replicated   2/2        iamhuble/video-generator-api:latest
+2c6jkiblsbuj   chatwoot_globalgo_chatwoot_app_chatbotcrm                  replicated   1/1        chatwoot/chatwoot:v3.16.0    
+xy97pqdbdbxj   chatwoot_globalgo_chatwoot_worker_chatbotcrm               replicated   1/1        chatwoot/chatwoot:v3.16.0    
+u1wi00cytf46   chatwoot_globalgo_redis_chatbotcrm                         replicated   1/1        redis:7-alpine               
+zx1wvpnhwgm2   chatwoot_seguroalvolante_chatwoot_app_seguroalvolante      replicated   1/1        chatwoot/chatwoot:v3.16.0    
+yrx2eaasn7x0   chatwoot_seguroalvolante_chatwoot_worker_seguroalvolante   replicated   6/6        chatwoot/chatwoot:v3.16.0    
+8sf3zptaspcg   chatwoot_seguroalvolante_redis_seguroalvolante             replicated   1/1        redis:7-alpine               
+mrhw8f90g3i6   n8n_fila_n8n_editor                                        replicated   1/1        n8nio/n8n:latest             
+j06t60mt2xwb   n8n_fila_n8n_webhook                                       replicated   1/1        n8nio/n8n:latest             
+k8yopll96zz8   n8n_fila_n8n_worker                                        replicated   4/4        n8nio/n8n:latest             
+pqg8usv42wsh   nocodb_nocodb                                              replicated   1/1        nocodb/nocodb:latest         
+vf1syn0wbv0a   pdf_api_app                                                replicated   1/1        pdfapi:latest                
+511aladaj3gp   pdf_api_db                                                 replicated   1/1        postgres:15                  
+ik40w47xcien   portainer_agent                                            global       1/1        portainer/agent:2.20.1       
+znz2ua4pgtma   portainer_portainer                                        replicated   1/1        portainer/portainer-ce:2.20.1
+tltotcmvd96h   postgres_postgres                                          replicated   1/1        pgvector/pgvector:pg16                   *:5432->5432/tcp
+4kydkdgk5zmr   redis_redis                                                replicated   1/1        redis:latest                 
+lsl7pbjgx1px   saas_agent-v2                                              replicated   1/1        iamhuble/whatsapp-saas-agent-v2:latest
+v4lir3ji9vdp   saas_core-api                                              replicated   1/1        iamhuble/whatsapp-saas-core:latest
+n90wbm2xbmr7   saas_efficore_redis                                        replicated   1/1        redis:7-alpine               
+fpptb3odvyb4   saas_frontend                                              replicated   1/1        iamhuble/whatsapp-saas-frontend:latest
+dqjzidmb8xg1   saas_whatsapp-api                                          replicated   1/1        iamhuble/whatsapp-saas-wa:latest
+db1gkll8pk8w   traefik_traefik                                            replicated   1/1        traefik:v2.11                            *:80->80/tcp, *:443->443/tcp
+NAMES                                                                                  IMAGE                                    CREATED AT
+saas_core-api.1.t6o1bn04efgzyq252aggfswny                                              iamhuble/whatsapp-saas-core:latest       2026-02-08 15:53:10 +0000 UTC
+saas_frontend.1.o83tqwxzx60vnzixb5la37ubd                                              iamhuble/whatsapp-saas-frontend:latest   2026-02-08 15:53:04 +0000 UTC
+saas_agent-v2.1.nx99rs86feuzf90dhznuicfwn                                              iamhuble/whatsapp-saas-agent-v2:latest   2026-02-05 21:41:00 +0000 UTC
+saas_whatsapp-api.1.97cgaw5g9a1g2bed1etatrz9l                                          iamhuble/whatsapp-saas-wa:latest         2026-02-05 21:40:56 +0000 UTC
+saas_efficore_redis.1.w9r5xmphiqzq8x5os23sprrrg                                        redis:7-alpine                           2026-02-05 21:40:52 +0000 UTC
+pdf_api_app.2.oxsrqxensok24dmti5ytn27jx                                                298192365d56                             2026-02-05 14:20:40 +0000 UTC
+pdf_api_db.1.la9my43v0m2toy2qizjafw2qo                                                 postgres:15                              2026-02-05 14:12:53 +0000 UTC
+postgres_postgres.1.hvbq9ybjd7ul1ndwhlxfnbsm4                                          pgvector/pgvector:pg16                   2026-02-02 20:31:21 +0000 UTC
+portainer_agent.t2ybzwfsvmyrj23pn4i8b8ziw.p5bfovzr8627pak3zgbn6gzw8                    portainer/agent:2.20.1                   2026-01-29 04:55:44 +0000 UTC
+api_video_video-api.2.ai7t86n4phxvbh3gw6prssggg                                        iamhuble/video-generator-api:latest      2026-01-29 04:44:45 +0000 UTC
+api_video_video-api.1.ap0v72d8xyz5zwe5gfmdrzk34                                        iamhuble/video-generator-api:latest      2026-01-29 04:44:42 +0000 UTC
+n8n_fila_n8n_worker.1.xwizsis1dwcekbysfzuywq6la                                        n8nio/n8n:latest                         2026-01-29 04:39:58 +0000 UTC
+chatwoot_seguroalvolante_chatwoot_worker_seguroalvolante.2.9kx1un9350u9a0rq3967a8c2c   chatwoot/chatwoot:v3.16.0                2026-01-29 04:39:51 +0000 UTC
+nocodb_nocodb.1.6k9ibz9y1e6judod5chjfv752                                              nocodb/nocodb:latest                     2026-01-29 04:39:19 +0000 UTC
+chatwoot_seguroalvolante_redis_seguroalvolante.1.76nnpuhvcexce7mcpkk7o73as             redis:7-alpine                           2026-01-29 04:38:49 +0000 UTC
+chatwoot_globalgo_chatwoot_app_chatbotcrm.1.lnw8t7alu2vztudclvxes8yqo                  chatwoot/chatwoot:v3.16.0                2026-01-29 04:38:47 +0000 UTC
+chatwoot_globalgo_chatwoot_worker_chatbotcrm.1.tu5qzpkkifhensuvwlxnc7hne               chatwoot/chatwoot:v3.16.0                2026-01-29 04:38:47 +0000 UTC
+n8n_fila_n8n_worker.3.3aczoz6hy26rrih32kgqurwuj                                        n8nio/n8n:latest                         2026-01-29 04:38:47 +0000 UTC
+chatwoot_seguroalvolante_chatwoot_worker_seguroalvolante.4.ytp2ppe5ctbl7g5e3ll888i48   chatwoot/chatwoot:v3.16.0                2026-01-29 04:38:45 +0000 UTC
+n8n_fila_n8n_worker.2.l1grfitunbpao0jejkiz5e9m5                                        n8nio/n8n:latest                         2026-01-29 04:38:40 +0000 UTC
+traefik_traefik.1.98vf3kud6wht65ej11ytlgs2z                                            traefik:v2.11                            2026-01-29 04:38:39 +0000 UTC
+chatwoot_seguroalvolante_chatwoot_app_seguroalvolante.1.wiablify2uzc52md8iycxu7hh      chatwoot/chatwoot:v3.16.0                2026-01-29 04:38:39 +0000 UTC
+portainer_portainer.1.rcvy9xippnsdc14vfxbft4y8e                                        portainer/portainer-ce:2.20.1            2026-01-29 04:38:39 +0000 UTC
+redis_redis.1.nclwzx52wbb21p1dipgweekdd                                                redis:latest                             2026-01-29 04:38:38 +0000 UTC
+chatwoot_seguroalvolante_chatwoot_worker_seguroalvolante.6.x4o2fcy5ejvq2dtobya07qwva   chatwoot/chatwoot:v3.16.0                2026-01-29 04:38:38 +0000 UTC
+n8n_fila_n8n_editor.1.haeliobeh852ku2vsvmcwb3zc                                        n8nio/n8n:latest                         2026-01-29 04:38:38 +0000 UTC
+chatwoot_seguroalvolante_chatwoot_worker_seguroalvolante.5.m2fc2ubpuhkbc3d7yot1wuicc   chatwoot/chatwoot:v3.16.0                2026-01-29 04:38:38 +0000 UTC
+chatwoot_seguroalvolante_chatwoot_worker_seguroalvolante.1.422x0dv0fhddmy5cij9rvpztl   chatwoot/chatwoot:v3.16.0                2026-01-29 04:38:38 +0000 UTC
+n8n_fila_n8n_webhook.1.k8pkax7r43og1r2qfalu5wdih                                       n8nio/n8n:latest                         2026-01-29 04:38:35 +0000 UTC
+n8n_fila_n8n_worker.4.uhqzuzvk3alogth1gjmv3hk2x                                        n8nio/n8n:latest                         2026-01-29 04:38:17 +0000 UTC
+chatwoot_seguroalvolante_chatwoot_worker_seguroalvolante.3.ymk5qlpf12ejaljdodsp307i7   chatwoot/chatwoot:v3.16.0                2026-01-29 04:38:16 +0000 UTC
+chatwoot_globalgo_redis_chatbotcrm.1.x9y2vzsar683w5oaalpnxmno5                         redis:7-alpine                           2026-01-29 04:38:12 +0000 UTC
