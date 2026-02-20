@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2 \
     fonts-liberation \
     poppler-utils \
+    libreoffice-writer \
     curl \
     && rm -rf /var/lib/apt/lists/*
 

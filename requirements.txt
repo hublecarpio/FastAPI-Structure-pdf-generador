@@ -16,3 +16,5 @@ weasyprint>=67.0
 pdf2image
 Pillow
 httpx
+python-docx
+python-docx

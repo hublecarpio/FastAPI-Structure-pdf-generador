@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-from app.routes import auth, templates, render, apikeys, me, web, images, pdf_convert
+from app.routes import auth, templates, render, apikeys, me, web, images, pdf_convert, docx_convert
 from app.core.database import engine, Base
 from app.models import user, template, apikey, renderlog
 
@@ -37,6 +37,7 @@ app.include_router(templates.router, prefix="/api")
 app.include_router(render.router, prefix="/api")
 app.include_router(images.router, prefix="/api")
 app.include_router(pdf_convert.router, prefix="/api")
+app.include_router(docx_convert.router, prefix="/api")
 app.include_router(web.router)
 
 

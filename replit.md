@@ -76,12 +76,20 @@ app/
 ### PDF Conversion
 - `POST /pdf-to-images` - Convert a PDF from URL to PNG images
 
+### DOCX Conversion
+- `POST /docx-convert` - Convert a DOCX file from URL to PDF, TXT, or images
+  - `output_format: "pdf"` - Returns the PDF file directly
+  - `output_format: "txt"` - Returns extracted text as JSON
+  - `output_format: "images"` - Returns URLs of PNG images for each page
+
 ## Technologies
 - **FastAPI** - Web framework
 - **SQLAlchemy** - ORM for database operations
 - **PostgreSQL** - Database (via Replit)
 - **WeasyPrint** - HTML to PDF conversion
 - **pdf2image** - PDF to image conversion (requires poppler)
+- **LibreOffice** - DOCX to PDF conversion (headless mode)
+- **python-docx** - DOCX text extraction
 - **Jinja2** - Template engine
 - **JWT** - Token-based authentication
 - **Boto3** - S3 storage (optional, falls back to local)
